@@ -111,20 +111,14 @@ func changeScore() {
             return
         }
         
-        // 해당학생이 존재하지 않는 경우 (학생을 추가해준다? / 오류를 뱉는다) -> 추가로 결정
         let student = Student(name: name, subject: subject, grade: grade)
-        
-        if totalStudent.contains(where: { $0.name == student.name && $0.subject == student.name }) {
-            // 기존에 있던 점수 제거
-            totalStudent.removeAll(where: { $0.name == student.name && $0.subject == student.subject })
-        }
-        
-        // 이후 추가
+
+        totalStudent.removeAll(where: { $0.name == student.name && $0.subject == nil && $0.grade == nil })
+        totalStudent.removeAll(where: { $0.name == student.name && $0.subject == student.subject })
         totalStudent.append(student)
         
     } else {
         
-        // 띄어쓰기 2개 이상 발견되지 않은경우 "Mickey Swift A+" 해당양식 미 적용
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
     }
 }
@@ -135,7 +129,7 @@ func removeScore() {
     print("성적을 삭제할 학생의 이름, 과목 이름을 띄어쓰기로 구분하여 차례로 작성해주세요.")
     print("입력예) Mickey Swift")
     
-    guard let nameAndScore = readLine() else {
+    guard let nameAndScore = readLine(), nameAndScore != "" else {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
     }
@@ -165,7 +159,7 @@ func showScore() {
     
     print("평점을 알고 싶은 학생의 이름을 입력해주세요.")
     
-    guard let name = readLine() else {
+    guard let name = readLine(), name != "" else {
         print("입력이 잘못되었습니다. 다시 확인해주세요.")
         return
     }
@@ -190,7 +184,8 @@ func showScore() {
     }
 }
 
-while true { // 종료되는 로직추가
+// MARK: Main
+while true {
     
     print("원하는 기능을 입력해주세요")
     print("1: 학생추가, 2: 학생삭제, 3: 성적추가(변경), 4: 성적삭제, 5: 평점보기, X: 종료")

@@ -45,7 +45,7 @@ private func convertToGrade(_ grade: String) -> Grade? {
 }
 
 // MARK: 학생추가
-func addNewStudent() {
+func addStudent() {
     
     print("추가할 학생의 이름을 입력해주세요")
     
@@ -86,7 +86,7 @@ func removeStudent() {
 }
 
 // MARK: 성적추가
-func changeScore() {
+func upsertScore() {
     
     print("성적을 추가할 학생의 이름, 과목이름, 성적(A+, A, F등)을 띄어쓰기로 구분하여 차례로 작성해주세요.")
     print("입력예) Mickey Swift A+")
@@ -193,9 +193,9 @@ while true {
     let input = readLine()
     
     switch input {
-    case "1": addNewStudent()
+    case "1": addStudent()
     case "2": removeStudent()
-    case "3": changeScore()
+    case "3": upsertScore()
     case "4": removeScore()
     case "5": showScore()
     case "X", "x":

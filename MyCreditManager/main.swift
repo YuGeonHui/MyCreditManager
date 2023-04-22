@@ -7,37 +7,10 @@
 
 import Foundation
 
-//- 학생추가
-//- 학생삭제
-//- 성적추가(변경)
-//- 성적삭제
-//- 평점보기
-//- 종료
-
-//- 사용자가 종료 메뉴를 선택하기 전까지는 계속해서 사용자의 입력을 받습니다
-//- 메뉴선택을 포함한 모든 입력은 숫자 또는 영문으로 받습니다
-
-//- A+ (4.5점) / A (4점)
-//- B+ (3.5점) / B (3점)
-//- C+ (2.5점) / C (2점)
-//- D+ (1.5점) / D (1점)
-//- F (0점)
-
-
-//## 평점
-//
-//- 각 과목의 점수 총 합 / 과목 수
-//- 최대 소수점 2번째 자리까지 출력
-//    - 예)
-//        - 3.75
-//        - 4.1
-//        - 2
-
 enum CreditError: Error {
     
     case inputErr
     case noSearchStudent
-//    case
 }
 
 enum Grade: Double {
@@ -55,16 +28,27 @@ enum Grade: Double {
 struct Student {
     
     let name: String
-    let score: [Double]?
-    let average: Double?
-}
-
-struct StudetManager {
-    
-    private var student: Student?
+    var subject: String?
+    var grade: Grade?
 }
 
 private var totalStudent: [Student] = []
+
+private func convertToGrade(_ grade: String) -> Grade? {
+    
+    switch grade {
+    case "A+": return .Aplus
+    case "A": return .A
+    case "B+": return .Bplus
+    case "B": return .B
+    case "C+": return .Cplus
+    case "C": return .C
+    case "D+": return .Dplus
+    case "D": return .D
+    case "F": return .F
+    default: do { return nil }
+    }
+}
 
 // MARK: 학생추가
 func addNewStudent() {
@@ -76,13 +60,13 @@ func addNewStudent() {
         return
     }
     
-    if totalStudent.contains(where: { $0.name == name}) {
+    if totalStudent.contains(where: { $0.name == name }) {
         
         print("\(name)은 이미 존재하는 학생입니다. 추가하지 않습니다.")
         
     } else {
         
-        let newStudent = Student(name: name, score: nil, average: nil)
+        let newStudent = Student(name: name, subject: nil, grade: nil)
         totalStudent.append(newStudent)
         
         print("\(name) 학생을 추가했습니다.")
@@ -107,16 +91,64 @@ func removeStudent() {
     }
 }
 
+// MARK: 성적추가
 func changeScore() {
-    print(#function)
+    
+    print("성적을 추가할 학생의 이름, 과목이름, 성적(A+, A, F등)을 띄어쓰기로 구분하여 차례로 작성해주세요.")
+    print("입력예) Mickey Swift A+")
+    print("만약에 학생의 성적 중 해당 과목이 존재하면 기존 점수가 갱신됩니다.")
+    
+    guard let score = readLine(), score != "" else {
+        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+        return
+    }
+    
+    let seperators = CharacterSet(charactersIn: " ")
+    let words = score.components(separatedBy: seperators)
+    
+    if words.count == 3 {
+        
+        let name = words[0]
+        let subject = words[1]
+        let upperGrade = words[2].uppercased()
+        
+        guard let grade = convertToGrade(upperGrade) else {
+            print("올바른 성적을 입력해주세요.")
+            return
+        }
+        
+        var student = Student(name: name, subject: subject, grade: grade)
+        totalStudent.append(student)
+    }
+    
+    
+    // 해당학생이 존재하지 않는 경우 (학생을 추가해준다? / 오류를 뱉는다)
+    // 잘못 입력한 경우 (띄어쓰기 오류, 입력 안했을 오류)
+    // 학점 입력이 잘 못된 경우 (알파벳)
+    
+    print(words)
 }
 
+// MARK: 성적삭제
 func removeScore() {
-    print(#function)
+    
+    print("성적을 삭제할 학생의 이름, 과목 이름을 띄어쓰기로 구분하여 차례로 작성해주세요.")
+    
 }
 
+// MARK: 평점보기
 func showScore() {
-    print(#function)
+    
+    print("평점을 알고 싶은 학생의 이름을 입력해주세요.")
+    
+    guard let name = readLine() else {
+        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+        return
+    }
+    
+    let studentScore = totalStudent.filter { $0.name == name }
+    
+    print(studentScore.count)
 }
 
 func exit() {
@@ -126,8 +158,6 @@ func exit() {
 func inputError() {
     
 }
-
-let students: [Student] = []
 
 while true { // 종료되는 로직추가
     

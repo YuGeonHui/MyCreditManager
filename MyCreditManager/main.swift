@@ -7,12 +7,6 @@
 
 import Foundation
 
-enum CreditError: Error {
-    
-    case inputErr
-    case noSearchStudent
-}
-
 enum Grade: Double {
     case Aplus = 4.5
     case A = 4.0
@@ -117,16 +111,22 @@ func changeScore() {
             return
         }
         
+        // 해당학생이 존재하지 않는 경우 (학생을 추가해준다? / 오류를 뱉는다) -> 추가로 결정
         let student = Student(name: name, subject: subject, grade: grade)
+        
+        if totalStudent.contains(where: { $0.name == student.name && $0.subject == student.name }) {
+            // 기존에 있던 점수 제거
+            totalStudent.removeAll(where: { $0.name == student.name && $0.subject == student.subject })
+        }
+        
+        // 이후 추가
         totalStudent.append(student)
+        
+    } else {
+        
+        // 띄어쓰기 2개 이상 발견되지 않은경우 "Mickey Swift A+" 해당양식 미 적용
+        print("입력이 잘못되었습니다. 다시 확인해주세요.")
     }
-    
-    
-    // 해당학생이 존재하지 않는 경우 (학생을 추가해준다? / 오류를 뱉는다)
-    // 잘못 입력한 경우 (띄어쓰기 오류, 입력 안했을 오류)
-    // 학점 입력이 잘 못된 경우 (알파벳)
-    
-    print(words)
 }
 
 // MARK: 성적삭제
@@ -190,10 +190,6 @@ func showScore() {
     }
 }
 
-func exit() {
-    return
-}
-
 while true { // 종료되는 로직추가
     
     print("원하는 기능을 입력해주세요")
@@ -207,7 +203,11 @@ while true { // 종료되는 로직추가
     case "3": changeScore()
     case "4": removeScore()
     case "5": showScore()
-    case "X": break
+    case "X", "x":
+        
+        print("프로그램을 종료합니다...")
+        exit(0)
+        
     default: print("뭔가 입력이 잘못되었습니다. 1 ~ 5 사이의 숫자 혹은 X를 입력해주세요.")
     }
 }

@@ -25,7 +25,7 @@ enum Grade: Double {
     case F = 0.0
 }
 
-struct Student {
+struct Student: Equatable {
     
     let name: String
     var subject: String?
@@ -117,7 +117,7 @@ func changeScore() {
             return
         }
         
-        var student = Student(name: name, subject: subject, grade: grade)
+        let student = Student(name: name, subject: subject, grade: grade)
         totalStudent.append(student)
     }
     
@@ -133,7 +133,31 @@ func changeScore() {
 func removeScore() {
     
     print("성적을 삭제할 학생의 이름, 과목 이름을 띄어쓰기로 구분하여 차례로 작성해주세요.")
+    print("입력예) Mickey Swift")
     
+    guard let nameAndScore = readLine() else {
+        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+        return
+    }
+    
+    let seperators = CharacterSet(charactersIn: " ")
+    let words = nameAndScore.components(separatedBy: seperators)
+    
+    if words.count == 2 {
+        
+        let name = words[0]
+        let subject = words[1]
+        
+        if totalStudent.contains(where: { $0.name == name && $0.subject == subject }) {
+            
+            totalStudent.removeAll(where: { $0.name == name && $0.subject == subject })
+            print("\(name) 학생의 \(subject)과목의 성적이 삭제되었습니다.")
+            
+        } else {
+            
+            print("\(name) 학생을 찾지 못했습니다.")
+        }
+    }
 }
 
 // MARK: 평점보기
@@ -146,17 +170,28 @@ func showScore() {
         return
     }
     
-    let studentScore = totalStudent.filter { $0.name == name }
-    
-    print(studentScore.count)
+    if totalStudent.contains(where: { $0.name == name }) {
+        
+        let students = totalStudent.filter { $0.name == name }
+        let avgScore = students.compactMap { $0.grade?.rawValue }.reduce(0.0, +) / Double(students.count)
+        
+        let _ = students.compactMap { ($0.subject, $0.grade) }.map { (subject, grade) in
+            
+            if let subject = subject, let grade = grade {
+                print("\(subject): \(grade)")
+            }
+        }
+        
+        print("평점: \(avgScore)")
+        
+    } else {
+        
+        print("\(name) 학생을 찾지 못했습니다.")
+    }
 }
 
 func exit() {
     return
-}
-
-func inputError() {
-    
 }
 
 while true { // 종료되는 로직추가

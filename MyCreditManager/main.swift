@@ -44,13 +44,20 @@ private func convertToGrade(_ grade: String) -> Grade? {
     }
 }
 
+private func validateInput(_ input: String?, errorMessage: String) -> String? {
+    guard let input = input, !input.isEmpty else {
+        print(errorMessage)
+        return nil
+    }
+    return input
+}
+
 // MARK: 학생추가
 func addStudent() {
     
     print("추가할 학생의 이름을 입력해주세요")
     
-    guard let name = readLine(), name != "" else {
-        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+    guard let name = validateInput(readLine(), errorMessage: "입력이 잘못되었습니다. 다시 확인해주세요.") else {
         return
     }
     
@@ -72,7 +79,9 @@ func removeStudent() {
     
     print("삭제할 학생의 이름을 입력해주세요")
     
-    guard let name = readLine(), name != "" else { return }
+    guard let name = validateInput(readLine(), errorMessage: "입력이 잘못되었습니다. 다시 확인해주세요.") else {
+        return
+    }
     
     if let index = totalStudent.firstIndex(where: { $0.name == name }) {
         
@@ -92,8 +101,7 @@ func upsertScore() {
     print("입력예) Mickey Swift A+")
     print("만약에 학생의 성적 중 해당 과목이 존재하면 기존 점수가 갱신됩니다.")
     
-    guard let score = readLine(), score != "" else {
-        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+    guard let score = validateInput(readLine(), errorMessage: "입력이 잘못되었습니다. 다시 확인해주세요.") else {
         return
     }
     
@@ -129,8 +137,7 @@ func removeScore() {
     print("성적을 삭제할 학생의 이름, 과목 이름을 띄어쓰기로 구분하여 차례로 작성해주세요.")
     print("입력예) Mickey Swift")
     
-    guard let nameAndScore = readLine(), nameAndScore != "" else {
-        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+    guard let nameAndScore = validateInput(readLine(), errorMessage: "입력이 잘못되었습니다. 다시 확인해주세요.") else {
         return
     }
     
@@ -159,11 +166,10 @@ func showScore() {
     
     print("평점을 알고 싶은 학생의 이름을 입력해주세요.")
     
-    guard let name = readLine(), name != "" else {
-        print("입력이 잘못되었습니다. 다시 확인해주세요.")
+    guard let name = validateInput(readLine(), errorMessage: "입력이 잘못되었습니다. 다시 확인해주세요.") else {
         return
     }
-    
+
     if totalStudent.contains(where: { $0.name == name }) {
         
         let students = totalStudent.filter { $0.name == name }
